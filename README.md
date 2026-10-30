@@ -39,6 +39,28 @@ Then authenticate: `/mcp` → **architect** → authenticate.
 `oauth` block of `.mcp.json`, so the target app can't be set by an env var there. Registering via
 the CLI lets your shell expand it into a literal client id (a public identifier, not a secret).
 
+## Memory sync (bundled hook)
+
+The plugin ships a lifecycle hook (`hooks/sync-memory.mjs`, run via `node`) that uploads
+Claude Code's **distilled memory** — the cross-session facts it remembers — to the same
+Trillo collector as your telemetry. That memory is the one knowledge layer not in
+telemetry, so it lets the comprehension tools build cleaner topic summaries and answer
+"how did we build X" more completely.
+
+It is **automatic and on by default**: installing the plugin registers it, and it reuses the
+telemetry env you already set (`OTEL_EXPORTER_OTLP_ENDPOINT` + the bearer key inside
+`OTEL_EXPORTER_OTLP_HEADERS`). If those aren't set, it does nothing. It fires on session
+start and after each turn, uploads only new/changed fragments (content-hash diff), sends
+distilled fragments only (never raw transcripts), and never blocks Claude Code. No python
+or jq needed; works on Windows.
+
+**To turn it off** without uninstalling the plugin, set `TRILLO_MEMORY_SYNC=off` (or `0` /
+`false` / `no`) alongside your telemetry env — telemetry keeps flowing, only memory sync stops.
+
+So Claude Code setup is **two steps, not three**: (1) the telemetry env, and (2) this
+plugin (which carries the MCP server, the skills, and this hook). Turn the sync off by
+removing the plugin, or by unsetting the telemetry env.
+
 ## Configuration
 
 - `ARCHITECT_APP_NAME` — the Trillo Observability app to work against; forms the client id

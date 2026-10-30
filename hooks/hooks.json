@@ -1,0 +1,11 @@
+{
+  "description": "Sync distilled Claude Code memory to the Trillo collector. Reuses the telemetry env (OTEL_EXPORTER_OTLP_ENDPOINT / _HEADERS); no-op when unset. Never blocks Claude Code.",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/sync-memory.mjs\"" } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/sync-memory.mjs\"" } ] }
+    ]
+  }
+}
