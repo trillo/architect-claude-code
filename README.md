@@ -51,6 +51,24 @@ claude
 `oauth` block of `.mcp.json`, so the target app can't be parameterized there. Registering via the
 CLI lets you put the app directly into the client id (a public identifier, not a secret).
 
+## Update
+
+To get a new version, run this in your shell (not inside a Claude Code session):
+
+```bash
+claude plugin marketplace update architect && claude plugin update architect
+```
+
+An open session keeps running the old version until you run `/reload-plugins` in it, or start a
+new session (`claude --continue` picks up your last conversation). Your `architect` MCP
+registration carries over, so you don't need to redo steps 2–4. If `/mcp` shows **architect**
+disconnected afterwards, run `/mcp` → **architect** → **authenticate** again.
+
+**Updating from 0.1.0 to 0.1.1 or later:** 0.1.1 adds two plugin settings for memory sync, and
+an update doesn't ask for them. Run `/plugin`, open the **Installed** tab, select **architect**,
+choose **Disable**, then **Enable**. Enabling asks for the collector endpoint and key (see
+[Memory sync](#memory-sync-bundled-hook)). Then run `/reload-plugins`.
+
 ## Memory sync (bundled hook)
 
 The plugin ships a lifecycle hook (`hooks/sync-memory.mjs`, run via `node`) that uploads
