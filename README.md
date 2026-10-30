@@ -32,10 +32,11 @@ claude plugin install architect
 ```
 
 **2. Connect it to your app** — replace `<appName>` with your Trillo Observability app's name and
-`<your-aos-host>` with your deployment, then paste the whole (single-line) command:
+`<your-aos-host>` with your deployment, then paste the whole (single-line) command. `--scope user`
+makes architect available in **every** project you code in (drop it for current-project-only):
 
 ```bash
-claude mcp add --transport http --client-id "architect-claude-code-<appName>" --callback-port 8091 architect "https://<your-aos-host>/api/v2.0/mcp"
+claude mcp add --scope user --transport http --client-id "architect-claude-code-<appName>" --callback-port 8091 architect "https://<your-aos-host>/api/v2.0/mcp"
 ```
 
 **3. Start Claude Code** (the previous commands only edit config — this opens a session; run it in the same folder):
