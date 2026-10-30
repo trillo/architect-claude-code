@@ -1,6 +1,6 @@
 {
   "name": "architect",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "An architecture copilot sidecar for Claude Code over Trillo Observability (Trillo AOS): comprehend past coding-agent work from telemetry, and get optional architectural guidance (capabilities) on new work — without changing how you work.",
   "author": {
     "name": "Trillo Inc",

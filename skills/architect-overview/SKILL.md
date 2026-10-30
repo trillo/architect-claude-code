@@ -40,8 +40,8 @@ what works right now, so the user doesn't discover gaps by accident. Gather in p
 
 - **App**: the appId from the `architect` server instructions ("Connected to Trillo AOS (appId: N …)").
 - **Agents**: `getAgents({ days: 30 })` gives the count, the most active (by executions), and the
-  most recent. If a `resourceKey` ends with the current Claude Code session id, mark it
-  **this session**.
+  most recent. Name agents by their `label`. If a `resourceKey` ends with the current Claude
+  Code session id, mark it **this session**.
 - **Guidance**: `listCapabilities({ domain: "software" })` gives the capability count.
 - **Memory sync**: read the one line in
   `~/.claude/projects/<project-slug>/memory/.sync_log`, where the slug is the session's working
@@ -51,7 +51,8 @@ Render it compactly, for example:
 
 ```
 Architect · app 600
-  Past work   5 agents (30 days) · most active: Anil-Claude-Code #12173 (389 runs)
+  Past work   5 agents (30 days) · most active: Anil-Claude-Code (1) (389 runs)
+              this session: Anil-Claude-Code (4)
   Guidance    0 capabilities · guidance unavailable until the catalog is seeded
   Memory sync up to date (08:25 UTC)
 ```

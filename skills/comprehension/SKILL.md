@@ -11,8 +11,10 @@ own **inference**.
 
 ## The flow
 
-1. **Pick the agent.** `getAgents` lists the coding agents. Confirm which one the user means (by
-   name / resourceKey) before narrowing.
+1. **Pick the agent.** `getAgents` lists the coding agents. Refer to each agent by its `label`
+   (e.g. "Anil-Claude-Code (3)"), not `name`: one key used in several terminals gives several
+   agents with the same `name`. Confirm which one the user means before narrowing. If the user
+   wants to rename one they own, use `setAgentLabel({ agentId, label })` (empty label resets it).
 2. **Find the topic.**
    - Browse: `getAgentTopics({ agentId })` — the agent's topics (clusters of related work).
    - Search within the agent: `findTopics({ agentId, phrase })` — keyword match over
