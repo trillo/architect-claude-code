@@ -11,9 +11,10 @@ AOS) deployment. Install the plugin, sign in to your Trillo AOS account, and Cla
 
 You don't change how you work. Guidance is offered, never required.
 
-The plugin registers one MCP server (**`architect`**, on Trillo AOS) and ships three skills:
-`architect-overview` (start here / router), `capability-workflow` (guidance on new work), and
-`comprehension` (analyze past work).
+The plugin registers one MCP server (**`architect`**, on Trillo AOS) and ships four skills:
+`architect-overview` (start here: status card + router), `capability-workflow` (guidance on new
+work), `comprehension` (analyze past work), and `journal` (optional: keep workflow / issues / rules
+as local files).
 
 ## Install
 

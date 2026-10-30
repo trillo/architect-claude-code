@@ -9,7 +9,7 @@
       "name": "architect",
       "source": "./",
       "description": "Architecture copilot sidecar over the Trillo AOS MCP server (OAuth login): comprehension of past coding-agent work + optional architectural guidance on new work.",
-      "version": "0.1.1"
+      "version": "0.1.2"
     }
   ]
 }

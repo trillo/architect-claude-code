@@ -32,7 +32,40 @@ Before doing real work, call `list_functions` and confirm the Architect tools ar
 If `list_functions` is empty or missing these, **halt** and tell the user the Architect app
 functions aren't bound to this session. **Never fall back to generic `data_*` CRUD tools.**
 
-## 3. Route the session
+## 3. Status card (first answer of the session)
+
+The first time the user engages Architect in a session ("what can Architect do?", "show me the
+capabilities", or any first request), open with a short status card **before** routing. It shows
+what works right now, so the user doesn't discover gaps by accident. Gather in parallel:
+
+- **App**: the appId from the `architect` server instructions ("Connected to Trillo AOS (appId: N …)").
+- **Agents**: `getAgents({ days: 30 })` gives the count, the most active (by executions), and the
+  most recent. If a `resourceKey` ends with the current Claude Code session id, mark it
+  **this session**.
+- **Guidance**: `listCapabilities({ domain: "software" })` gives the capability count.
+- **Memory sync**: read the one line in
+  `~/.claude/projects/<project-slug>/memory/.sync_log`, where the slug is the session's working
+  directory with `/` replaced by `-` (e.g. `/Users/me/work` → `-Users-me-work`).
+
+Render it compactly, for example:
+
+```
+Architect · app 600
+  Past work   5 agents (30 days) · most active: Anil-Claude-Code #12173 (389 runs)
+  Guidance    0 capabilities · guidance unavailable until the catalog is seeded
+  Memory sync up to date (08:25 UTC)
+```
+
+Then add one line per problem, with the fix:
+- 0 agents → telemetry isn't reaching this app; check the `OTEL_*` setup.
+- 0 capabilities → guidance is unavailable; an admin needs to run `seedCapabilities`.
+- `.sync_log` missing or `skipped: … not configured` → set the collector endpoint and key:
+  `/plugin` → Installed → architect → Disable, then Enable (asks for both), then `/reload-plugins`.
+- `upload failed: HTTP 401` → the collector key is wrong; re-enter it the same way.
+
+Don't repeat the card later in the session unless the user asks for status.
+
+## 4. Route the session
 
 Ask once, early:
 
@@ -45,7 +78,11 @@ Ask once, early:
 The user may also jump straight to an intent ("audit the auth flow", "why did agent X keep
 failing") — infer the branch and go.
 
-## 4. The bright line between the two knowledge bases
+Once the work has a direction, offer the journal in one line: *"Want me to keep a journal of
+this work (steps, issues, rules) as local files?"* If yes, use the **`journal`** skill. Offer it
+once per session; don't push.
+
+## 5. The bright line between the two knowledge bases
 
 Pick the right one; don't cross them:
 - *"What happened? What have the agents done? Why did this run fail?"* → **comprehension** tools
@@ -53,7 +90,7 @@ Pick the right one; don't cross them:
 - *"How should I do X? What's our standard for Y?"* → **guidance** (`findCapabilities` /
   `getCapability`).
 
-## 5. Carry selection as conversation state
+## 6. Carry selection as conversation state
 
 "Selected agent/topic" lives in the conversation — thread `agentId` / `topicId` into each tool
 call. There is no server-side session. Keep facts you got from tools separate from your own
