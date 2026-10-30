@@ -38,7 +38,13 @@ claude plugin install architect
 claude mcp add --transport http --client-id "architect-claude-code-<appName>" --callback-port 8091 architect "https://<your-aos-host>/api/v2.0/mcp"
 ```
 
-**3. Authenticate:** run `/mcp` → **architect** → **authenticate**.
+**3. Start Claude Code** (the previous commands only edit config — this opens a session; run it in the same folder):
+
+```bash
+claude
+```
+
+**4. Authenticate:** inside the Claude Code session (not the shell), run `/mcp` → **architect** → **authenticate**. A browser opens to sign in, then redirects back; `/mcp` should then show **architect** connected.
 
 **Why the CLI and not the plugin's `.mcp.json`:** Claude Code does not expand variables inside the
 `oauth` block of `.mcp.json`, so the target app can't be parameterized there. Registering via the
