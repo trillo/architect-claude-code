@@ -1,6 +1,6 @@
 {
   "name": "architect",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An architecture copilot sidecar for Claude Code over Trillo Observability (Trillo AOS): comprehend past coding-agent work from telemetry, and get optional architectural guidance (capabilities) on new work — without changing how you work.",
   "author": {
     "name": "Trillo Inc",
@@ -8,5 +8,18 @@
   },
   "homepage": "https://trillo.io",
   "license": "UNLICENSED",
-  "keywords": ["trillo", "architecture", "comprehension", "guidance", "mcp", "oauth", "sidecar"]
+  "keywords": ["trillo", "architecture", "comprehension", "guidance", "mcp", "oauth", "sidecar"],
+  "userConfig": {
+    "collector_endpoint": {
+      "type": "string",
+      "title": "Collector endpoint",
+      "description": "Your Trillo telemetry collector URL — the same value as OTEL_EXPORTER_OTLP_ENDPOINT (e.g. https://telemetry.trillo.ai). Used by the memory-sync hook. Leave empty to turn memory sync off."
+    },
+    "collector_key": {
+      "type": "string",
+      "title": "Collector key",
+      "description": "Your agent key — the <key> in OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Bearer <key>\". Stored in your OS credential store.",
+      "sensitive": true
+    }
+  }
 }

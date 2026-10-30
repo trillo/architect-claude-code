@@ -6,17 +6,24 @@
  * python3, no jq, no external deps (Node 18+ built-ins only). Claude Code runs
  * on Node, so it is always present, and this runs natively on Windows too.
  *
- * Reuses the SAME telemetry env vars (no separate URL / key):
- *   OTEL_EXPORTER_OTLP_ENDPOINT  -> collector base URL
- *   OTEL_EXPORTER_OTLP_HEADERS   -> "Authorization=Bearer <key>"  (key extracted)
+ * Collector URL + key come from the plugin's userConfig (entered on enable):
+ *   CLAUDE_PLUGIN_OPTION_COLLECTOR_ENDPOINT  -> collector base URL
+ *   CLAUDE_PLUGIN_OPTION_COLLECTOR_KEY       -> bearer key (sensitive)
+ * Claude Code strips OTEL_* vars from every subprocess it spawns, hooks included,
+ * so the telemetry env is NOT visible here. It is still read as a fallback for
+ * runs outside Claude Code (e.g. invoking this script by hand):
+ *   OTEL_EXPORTER_OTLP_ENDPOINT, OTEL_EXPORTER_OTLP_HEADERS ("Authorization=Bearer <key>")
+ *
+ * Each run overwrites memory/.sync_log with one line saying what it did (synced
+ * N, up to date, skipped + why, or the upload error), so a no-op is never silent.
  *
  * Reads the hook JSON on stdin, acts only on SessionStart / Stop / SessionEnd,
  * finds memory/ next to the transcript, and POSTs new / changed fragments
  * (incremental by manifest diff; first run sends all). Never blocks Claude Code:
  * always prints {"continue": true} and exits 0.
  *
- * ON by default. Opt out with TRILLO_MEMORY_SYNC=off (or 0 / false / no) in the
- * same place you set the telemetry env — telemetry keeps working, memory stops.
+ * ON once configured. Opt out by clearing the collector endpoint in the plugin
+ * config, or with TRILLO_MEMORY_SYNC=off (or 0 / false / no) in your shell env.
  *
  * Collector endpoints (authenticated with the SAME telemetry key):
  *   GET  {BASE}/v1/memory/manifest -> {"items": {"<slug>": "<hash>", ...}}
@@ -83,6 +90,13 @@ function dirDigest(memdir, files) {
   return h.digest("hex");
 }
 
+/** Overwrite memory/.sync_log with one timestamped status line (best effort). */
+function logStatus(memdir, msg) {
+  try {
+    writeFileSync(join(memdir, ".sync_log"), `${new Date().toISOString()} ${msg}\n`);
+  } catch { /* best effort */ }
+}
+
 async function getJson(url, key) {
   const res = await fetch(url, {
     headers: { Authorization: "Bearer " + key },
@@ -107,13 +121,13 @@ async function sync(memdir, base, key) {
   const files = readdirSync(memdir)
     .filter((f) => f.endsWith(".md") && f !== "MEMORY.md")
     .sort();
-  if (files.length === 0) return;
+  if (files.length === 0) return logStatus(memdir, "skipped: no memory fragments");
 
   const statePath = join(memdir, ".sync_state");
   const curDigest = dirDigest(memdir, files);
   // Nothing changed since the last successful sync -> exit before any network call.
   try {
-    if (readFileSync(statePath, "utf8").trim() === curDigest) return;
+    if (readFileSync(statePath, "utf8").trim() === curDigest) return logStatus(memdir, "up to date");
   } catch { /* no prior state */ }
 
   const local = {};
@@ -143,8 +157,9 @@ async function sync(memdir, base, key) {
   if (changed.length > 0) {
     try {
       await postJson(base + "/v1/memory", key, { records: changed });
-    } catch {
-      return; // upload failed -> retry next run (manifest + digest NOT saved)
+    } catch (e) {
+      // upload failed -> retry next run (manifest + digest NOT saved)
+      return logStatus(memdir, `upload failed (${changed.length} fragments): ${e.message}`);
     }
     for (const f of changed) have[f.name] = f.hash;
     try {
@@ -157,6 +172,7 @@ async function sync(memdir, base, key) {
   try {
     writeFileSync(statePath, curDigest);
   } catch { /* best effort */ }
+  logStatus(memdir, changed.length ? `synced ${changed.length} fragments` : "up to date");
 }
 
 async function readStdin() {
@@ -167,17 +183,6 @@ async function readStdin() {
 
 async function main() {
   const input = await readStdin();   // drain stdin first (match the shell wrapper)
-
-  // Explicit opt-out: memory sync is on by default; this disables it without
-  // touching telemetry or uninstalling the plugin.
-  const flag = (process.env.TRILLO_MEMORY_SYNC || "").trim().toLowerCase();
-  if (flag === "off" || flag === "0" || flag === "false" || flag === "no") return;
-
-  const base = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "").replace(/\/+$/, "");
-  // Key lives inside OTEL_EXPORTER_OTLP_HEADERS as "...Authorization=Bearer <key>...".
-  const km = (process.env.OTEL_EXPORTER_OTLP_HEADERS || "").match(/[Bb]earer\s+([^,]*)/);
-  const key = km ? km[1].trim() : "";
-  if (!base || !key) return;   // nothing configured -> no-op
 
   let event, transcript;
   try {
@@ -193,6 +198,24 @@ async function main() {
   // Memory lives next to the transcript: <proj>/<session>.jsonl -> <proj>/memory
   const memdir = join(dirname(transcript), "memory");
   if (!existsSync(memdir)) return;
+
+  // Explicit opt-out: disables memory sync without touching telemetry or
+  // uninstalling the plugin.
+  const flag = (process.env.TRILLO_MEMORY_SYNC || "").trim().toLowerCase();
+  if (flag === "off" || flag === "0" || flag === "false" || flag === "no") {
+    return logStatus(memdir, "skipped: TRILLO_MEMORY_SYNC=" + flag);
+  }
+
+  // Plugin userConfig first; OTEL_* only reaches us when run outside Claude Code.
+  const base = (process.env.CLAUDE_PLUGIN_OPTION_COLLECTOR_ENDPOINT
+    || process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "").trim().replace(/\/+$/, "");
+  // OTEL key lives inside OTEL_EXPORTER_OTLP_HEADERS as "...Authorization=Bearer <key>...".
+  const km = (process.env.OTEL_EXPORTER_OTLP_HEADERS || "").match(/[Bb]earer\s+([^,]*)/);
+  const key = (process.env.CLAUDE_PLUGIN_OPTION_COLLECTOR_KEY || (km ? km[1] : "")).trim();
+  if (!base || !key) {
+    return logStatus(memdir, "skipped: collector " + (!base ? "endpoint" : "key")
+      + " not configured (set it in the architect plugin config)");
+  }
   await sync(memdir, base, key);
 }
 

@@ -59,19 +59,26 @@ Trillo collector as your telemetry. That memory is the one knowledge layer not i
 telemetry, so it lets the comprehension tools build cleaner topic summaries and answer
 "how did we build X" more completely.
 
-It is **automatic and on by default**: installing the plugin registers it, and it reuses the
-telemetry env you already set (`OTEL_EXPORTER_OTLP_ENDPOINT` + the bearer key inside
-`OTEL_EXPORTER_OTLP_HEADERS`). If those aren't set, it does nothing. It fires on session
-start and after each turn, uploads only new/changed fragments (content-hash diff), sends
-distilled fragments only (never raw transcripts), and never blocks Claude Code. No python
-or jq needed; works on Windows.
+**Configure it once.** When you enable the plugin, Claude Code asks for two values: the same
+collector you already use for telemetry.
 
-**To turn it off** without uninstalling the plugin, set `TRILLO_MEMORY_SYNC=off` (or `0` /
-`false` / `no`) alongside your telemetry env — telemetry keeps flowing, only memory sync stops.
+- **Collector endpoint**: the value of your `OTEL_EXPORTER_OTLP_ENDPOINT`.
+- **Collector key**: the `<key>` in `OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <key>"`.
+  It's stored in your OS credential store.
 
-So Claude Code setup is **two steps, not three**: (1) the telemetry env, and (2) this
-plugin (which carries the MCP server, the skills, and this hook). Turn the sync off by
-removing the plugin, or by unsetting the telemetry env.
+The hook can't read your telemetry env directly, because Claude Code strips `OTEL_*` variables
+from every process it spawns, hooks included. That's why it asks for the values separately.
+
+After that it's automatic. It fires on session start and after each turn, uploads only
+new or changed fragments (content-hash diff), sends distilled fragments only (never raw
+transcripts), and never blocks Claude Code. No python or jq needed, and it works on Windows.
+
+**Check it's working:** `~/.claude/projects/<project>/memory/.sync_log` holds one line from the
+last run: `synced N fragments`, `up to date`, `skipped: …` with the reason, or `upload failed: …`.
+
+**To turn it off** without uninstalling the plugin, clear the collector endpoint in the plugin
+config, or set `TRILLO_MEMORY_SYNC=off` (or `0` / `false` / `no`) in your shell env. Telemetry
+keeps flowing; only memory sync stops.
 
 ## Configuration
 
@@ -87,7 +94,8 @@ the Agent Keys → setup wizard renders this step with your app name and MCP URL
 
 ## Status
 
-v0.1.0 — first cut. Comprehension tools reuse the existing Trillo Observability functions; guidance
+v0.1.1: memory sync reads the collector from plugin config (v0.1.0 read `OTEL_*`, which hooks
+never see, so it never synced). v0.1.0 was the first cut. Comprehension tools reuse the existing Trillo Observability functions; guidance
 runs on a seeded capability catalog (`software` domain), starting with `rbac-review`. The backend
 (Capability store + `seed`/`list`/`find`/`get`/`upsert` functions) lives in the Trillo Observability
 app.
