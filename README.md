@@ -17,27 +17,32 @@ The plugin registers one MCP server (**`architect`**, on Trillo AOS) and ships t
 
 ## Install
 
-Install the plugin, then register the `architect` MCP server for your app — the app rides the OAuth
-**client id** (`architect-claude-code-<appName>`), registered via the CLI so your shell fills in the
-name:
+Install the plugin, then register the `architect` MCP server for your app. The target app rides the
+OAuth **client id** (`architect-claude-code-<appName>`, a public identifier — not a secret), and the
+MCP URL is your Trillo AOS deployment + `/api/v2.0/mcp`.
+
+**1. Install the plugin:**
 
 ```bash
 claude plugin marketplace add trillo/architect-claude-code
-claude plugin install architect
-
-export ARCHITECT_APP_NAME="Your_App_Name"                      # your Trillo Observability app's name
-export ARCHITECT_MCP_URL="https://aos.trillo.ai/api/v2.0/mcp"  # or your deployment's URL
-claude mcp add --transport http \
-  --client-id "architect-claude-code-$ARCHITECT_APP_NAME" \
-  --callback-port 8091 \
-  architect "$ARCHITECT_MCP_URL"
 ```
 
-Then authenticate: `/mcp` → **architect** → authenticate.
+```bash
+claude plugin install architect
+```
 
-**Why the CLI and not the plugin's `.mcp.json`:** Claude Code does not expand `${VAR}` inside the
-`oauth` block of `.mcp.json`, so the target app can't be set by an env var there. Registering via
-the CLI lets your shell expand it into a literal client id (a public identifier, not a secret).
+**2. Connect it to your app** — replace `<appName>` with your Trillo Observability app's name and
+`<your-aos-host>` with your deployment, then paste the whole (single-line) command:
+
+```bash
+claude mcp add --transport http --client-id "architect-claude-code-<appName>" --callback-port 8091 architect "https://<your-aos-host>/api/v2.0/mcp"
+```
+
+**3. Authenticate:** run `/mcp` → **architect** → **authenticate**.
+
+**Why the CLI and not the plugin's `.mcp.json`:** Claude Code does not expand variables inside the
+`oauth` block of `.mcp.json`, so the target app can't be parameterized there. Registering via the
+CLI lets you put the app directly into the client id (a public identifier, not a secret).
 
 ## Memory sync (bundled hook)
 
@@ -63,10 +68,15 @@ removing the plugin, or by unsetting the telemetry env.
 
 ## Configuration
 
-- `ARCHITECT_APP_NAME` — the Trillo Observability app to work against; forms the client id
-  `architect-claude-code-$ARCHITECT_APP_NAME`.
-- `ARCHITECT_MCP_URL` — the Trillo AOS MCP endpoint (e.g. `https://aos.trillo.ai/api/v2.0/mcp`, or
-  your dev / self-hosted URL).
+Two values go directly into the `claude mcp add` command (step 2 above) — no env vars to set:
+
+- **app name** — your Trillo Observability app's name, in the client id
+  `architect-claude-code-<appName>`. It selects which app AOS authenticates you against.
+- **MCP URL** — your Trillo AOS deployment + `/api/v2.0/mcp`
+  (e.g. `https://aos.trillo.ai/api/v2.0/mcp`, or your dev / self-hosted host).
+
+Tip: a Trillo Observability deployment can hand you a ready-to-paste command with both filled in —
+the Agent Keys → setup wizard renders this step with your app name and MCP URL already substituted.
 
 ## Status
 
