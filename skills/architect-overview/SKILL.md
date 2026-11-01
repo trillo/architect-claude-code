@@ -25,7 +25,7 @@ the browser flow. If a tool returns "unauthorized", re-run `/mcp` → authentica
 ## 2. Preflight: verify the tools are bound
 
 Before doing real work, call `list_functions` and confirm the Architect tools are exposed:
-- Comprehension: `getAgents`, `getAgentTopics`, `findTopics`, `searchExecutions`,
+- Comprehension: `getAgents`, `getSessions`, `getAgentTopics`, `findTopics`, `searchExecutions`,
   `getTopicExecutions`, `getExecutionDetails`, `answerFromKnowledge`.
 - Guidance: `listCapabilities`, `findCapabilities`, `getCapability`, `upsertCapability`.
 
@@ -39,9 +39,11 @@ capabilities", or any first request), open with a short status card **before** r
 what works right now, so the user doesn't discover gaps by accident. Gather in parallel:
 
 - **App**: the appId from the `architect` server instructions ("Connected to Trillo AOS (appId: N …)").
-- **Agents**: `getAgents({ days: 30 })` gives the count, the most active (by executions), and the
-  most recent. Name agents by their `label`. If a `resourceKey` ends with the current Claude
-  Code session id, mark it **this session**.
+- **Agents**: `getAgents({ days: 30, identityVersion: 2 })` gives the count, the most active (by
+  executions), and the most recent. A coding agent is one per key (its sessions roll up into it).
+  Name agents by their `label`.
+- **This session**: `getSessions({ agentId, days: 1 })` for the coding agent; the entry whose
+  `sessionId` equals the current Claude Code session id is **this session** (show its `label`).
 - **Guidance**: `listCapabilities({ domain: "software" })` gives the capability count.
 - **Memory sync**: read the one line in
   `~/.claude/projects/<project-slug>/memory/.sync_log`, where the slug is the session's working
@@ -51,8 +53,8 @@ Render it compactly, for example:
 
 ```
 Architect · app 600
-  Past work   5 agents (30 days) · most active: Anil-Claude-Code (1) (389 runs)
-              this session: Anil-Claude-Code (4)
+  Past work   1 agent (30 days) · Anil-Claude-Code (668 runs, 4 sessions)
+              this session: Knowledge Sweeper (started Oct 30)
   Guidance    0 capabilities · guidance unavailable until the catalog is seeded
   Memory sync up to date (08:25 UTC)
 ```
