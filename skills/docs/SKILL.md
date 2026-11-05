@@ -43,7 +43,7 @@ gets its own folder) + the subfolder + a file name from the title.
     `sidecar://agents/<agentId>/topics/<topicId>`, executions as
     `sidecar://agents/<agentId>/executions/<executionId>`, commits as `git:<repo>@<hash>`; cite them in
     the body with footnotes `[^id]`.
-- `generatedBy`: `architect-docs/<model>` for what you wrote; `human:<id>` when the user wrote it.
+- `generatedBy`: `architect-docs/<model>` for what you wrote; `human:<email>` (the user's email) when the user wrote it.
 - **A file that lives in a repo**: pass `origin {repo, path, commit}` (current HEAD). Saving the same
   repo file again updates the same document.
 - **A local file with a YAML block**: send it as is if the block is simple (`key: value`, `[a, b]`);
@@ -79,7 +79,7 @@ credentials were redacted"*) — the stored copy then differs from the local fil
 
 "Import the docs in <folder>": list the `.md` files; propose a table — local file → type → subfolder →
 one-line description — and ask the user to confirm or edit it; then save each with `origin`
-(repo, path, HEAD commit), `generatedBy: human:<id>` unless an agent wrote it, and report what was
+(repo, path, HEAD commit), `generatedBy: human:<email>` unless an agent wrote it, and report what was
 saved, skipped or redacted. Re-running the import updates the same documents (matched by `origin`).
 
 ## Rules
