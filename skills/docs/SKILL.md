@@ -55,6 +55,8 @@ gets its own folder) + the subfolder + a file name from the title.
 → edit (in a local file if it is long) → `saveDocument({ id, content, expectedVersion })`. On **409**
 (someone saved a newer version): fetch the latest, show what changed, merge, save again with its
 version. Never overwrite blindly. Move with `updateDocumentInfo({ id, path })`, never by retitling.
+New content clears a human verification; tell the user if the document was verified, so they can
+verify it again.
 
 **After a save**, report: the path and version; who can see it; and **any redactions** (*"2
 credentials were redacted"*) — the stored copy then differs from the local file.
