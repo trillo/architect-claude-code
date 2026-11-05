@@ -1,5 +1,5 @@
 ---
-description: Write a design document (or a write-up) of past work on a subject by joining Sidecar's record of the work — the why, the alternatives tried, decisions, problems, open items — with the git history of the files that work changed, for the exact current mechanics. Use when the user asks for a design doc, a write-up, a history or "how does X work and why" for something already built with a coding agent.
+description: Write a design document (or a write-up) of past work on a topic by joining Sidecar's record of the work — the why, the alternatives tried, decisions, problems, open items — with the git history of the files that work changed, for the exact current mechanics. Use when the user asks for a design doc, a write-up, a history or "how does X work and why" for something already built with a coding agent.
 ---
 
 # Design doc — Sidecar record + git
@@ -11,11 +11,11 @@ model or a wrong number; commit messages rarely say what was tried and rejected.
 
 ## The flow
 
-1. **Find the subjects.** `getTopicTree({ agentId })` lists the agent's subjects (most recent
-   first). Pick every subject that belongs to what the user asked about — work is often spread over
-   a few (e.g. a design subject, a pod-port subject, a timeout fix). Confirm the list with the user
+1. **Find the topics.** `getTopicTree({ agentId })` lists the agent's topics (most recent
+   first). Pick every topic that belongs to what the user asked about — work is often spread over
+   a few (e.g. a design topic, a pod-port topic, a timeout fix). Confirm the list with the user
    if it is not obvious.
-2. **Read the record.** `getTopic({ topicId })` for each subject returns its episodes, oldest
+2. **Read the record.** `getTopic({ topicId })` for each topic returns its episodes, oldest
    first: summary, decisions, items (open items, concerns, problems), `files`
    (`{path, op, repo}`), `commits` (`{hashes, messages}`), start/end time, execution ids.
 3. **Join to git (locally — the repos are on this machine).** For each episode:
@@ -28,7 +28,7 @@ model or a wrong number; commit messages rarely say what was tried and rejected.
    parameters, data model and APIs. **The code wins** over a summary when they disagree.
 5. **Drill into executions only for what neither has** — the user's reasoning, an evaluation
    result: `searchExecutions({ agentId, query })`, then `getExecutionDetails({ executionId })`.
-6. **Write the document** as a local markdown file:
+6. **Write the document** as a local markdown file (then offer to save it to Sidecar — step 7):
    1. Problem and goals
    2. How it evolved (versions, why each was replaced)
    3. Current design — stage by stage, with parameters from the code
@@ -39,7 +39,11 @@ model or a wrong number; commit messages rarely say what was tried and rejected.
    8. Security / privacy concerns
    9. Open items
    10. Corrections to the record (where code or executions contradicted a summary)
-   11. Commits behind each subject (episode → commits)
+   11. Commits behind each topic (episode → commits)
+
+7. **Offer to save it to Sidecar** (the `docs` skill): type `Design`, a subfolder from the topic,
+   `sources` = the topics (`sidecar://agents/<id>/topics/<id>`), the key executions and the commits
+   it cites, `generatedBy: architect-design-doc/<model>`, `origin` when the file is in a repo.
 
 ## Rules
 

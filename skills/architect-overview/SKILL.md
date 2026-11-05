@@ -77,6 +77,8 @@ Ask once, early:
 - **Analyze past work** → use the **`comprehension`** skill (agents → topics → executions → Q&A).
   For a design document, write-up or history of something already built, use the **`design-doc`**
   skill (Sidecar record joined to git).
+- **Save, share, find or open a document** (designs, PRDs, specs, reports, notes) → use the
+  **`docs`** skill.
 - **Starting new work** → ask *"Want to see the architectural guidance we offer?"* If yes, use the
   **`capability-workflow`** skill. If no, step back and let them work.
 
