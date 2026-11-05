@@ -7,7 +7,7 @@ description: Save, find, read and update documents (markdown — designs, PRDs, 
 Sidecar keeps the documents a developer and their coding agent produce next to the agents and topics
 the work came from. A document's **metadata** (its frontmatter) and **content** (markdown, no YAML
 block) are stored separately; every save of new content is a new **version**. Tools: `saveDocument`,
-`getDocument`, `listDocuments`, `updateDocumentInfo`, `deleteDocument`.
+`getDocument`, `listDocuments`, `searchDocuments`, `updateDocumentInfo`, `deleteDocument`, `rebuildIndex`.
 
 ## Who sees a document
 
@@ -63,7 +63,11 @@ credentials were redacted"*) — the stored copy then differs from the local fil
 
 ## Finding and reading
 
-- `listDocuments({ search | folder | topicId | agentId | type | mine })` — show title, description,
+- **By meaning or words:** `searchDocuments({ query, folder?, type?, mine?, agentId?, topicId? })` — one
+  result per document with its best-matching passage (`match.heading`, `match.snippet`); prefer it to
+  `listDocuments` for "find the doc about …". If a save reported `index.pending` or `index.error`, or
+  search misses documents saved before search existed, run `rebuildIndex()` (async; returns a taskId).
+- **By place or filter:** `listDocuments({ search | folder | topicId | agentId | type | mine })` — show title, description,
   path, owner, version, and the trust tier: agent-written and unverified (`generatedBy` not `human:`,
   no `verifiedBy`) vs human-reviewed (`verifiedBy` starts with `human:`).
 - `getDocument({ id, part })` — `content` to read; `full` for the file with frontmatter; `version` for
