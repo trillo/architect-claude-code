@@ -61,10 +61,16 @@ or `model` have no effect for dynamic skills; read them as notes.
 
 - `getSkill({ name, agentId })` → edit → `saveSkill({ agentId, name, content, expectedVersion })`,
   where `expectedVersion` is the version you read. On 409, fetch again, merge, save.
-- **A system skill:** the save creates the user's own copy, which replaces the system skill for
-  this agent. Say so once: *"This makes your own copy of <name>; delete it to go back to the
+- **A system skill:** first copy it - `duplicateSkill({ name, agentId, layer: "system" })` (same
+  name, so it replaces the system skill for this agent; the copy remembers where it came from) -
+  then edit the copy. Say so once: *"This makes your own copy of <name>; delete it to go back to the
   system version."*
-- **Turn a system skill off** for this agent: `saveSkill({ agentId, name, disabled: true })`.
+- **Copy a skill** under a new name or to another of the user's agents:
+  `duplicateSkill({ name, agentId, newName?, targetAgentId? })`.
+- **Rename:** `saveSkill({ id, name: newName })`. Masking is by name: a renamed copy stops replacing
+  the system skill of its old name (that one applies again - tell the user).
+- **Turn a system skill off** for this agent: `saveSkill({ agentId, name, disabled: true })`; back on
+  with `disabled: false`.
 - **Delete** (after the user confirms): `deleteSkill({ agentId, name })`. A system skill of the same
   name applies again.
 - No change notes or version comments. Every save is a version. If someone asks what changed,
