@@ -13,24 +13,25 @@ block) are stored separately; every save of new content is a new **version**. To
 ## Who sees a document
 
 - The **owner** (the writer) always.
-- Unless it is **private**: also anyone who can see one of its **context agents**.
-- It is saved in the tenant you are logged into, whatever agent you are analyzing.
+- Unless it is **private**: also anyone who can see the document's **agent**.
 
-## Agents to pass
+## The document's agent
 
-- **Who wrote it** → always pass `sessionId: "${CLAUDE_SESSION_ID}"` to `saveDocument`. The server
-  finds the user's key that carries this session and records its agent as the writer (one agent per
-  key). Don't look the agent up yourself; never ask for or pass the collector key.
-- **Context agent** → `contextAgentIds` only when the user chose another (shared) agent for this
-  work, e.g. the agent being analyzed or the team agent they want to share with. Otherwise leave it
-  out: a new document gets the writer's agent.
-- After the save, `ownerAgentId` is the writer's agent. If it is null, tell the user the document has
-  no writer agent (telemetry for this session was not found).
+- A document belongs to **the writer's own agent**: the agent of the key this session runs under.
+  Never another user's agent - even when the work analyzed someone else's (shared) agent. Cite that
+  agent's topics as `sources` instead.
+- Always pass `sessionId: "${CLAUDE_SESSION_ID}"` to `saveDocument`; the server finds the agent.
+  Don't look it up yourself; never ask for or pass the collector key.
+- If the save is refused because the agent can't be determined, the message lists the user's agents:
+  ask the user which one, then save again with `agentId` set to it.
+- If it is refused because the agent belongs to another organization, tell the user to switch to that
+  organization and save again.
+- Move a document to another of the user's own agents with `updateDocumentInfo({ id, agentId })`.
 
 ## Saving
 
 **When:** when the user asks; and, after you write a design, PRD, spec or report, offer **once**:
-*"Save this to Sidecar? People who can see agent <label> will see it — or keep it private."* Never
+*"Save this to Sidecar? People who can see your agent will see it — or keep it private."* Never
 save silently.
 
 **A new document** — give `type`, `title`, and a `subfolder`; the server composes the path:
@@ -52,7 +53,7 @@ gets its own folder) + the subfolder + a file name from the title.
   repo file again updates the same document.
 - **A local file with a YAML block**: send it as is if the block is simple (`key: value`, `[a, b]`);
   otherwise split it and send the frontmatter as JSON.
-- **First save of a document**: say who will see it (owner + people who can see the context agent) and
+- **First save of a document**: say who will see it (the user + people who can see their agent) and
   offer private. After that, no prompt.
 
 **Updating** — always by `id` (from the save, or `listDocuments`): `getDocument({ id, part: "content" })`
