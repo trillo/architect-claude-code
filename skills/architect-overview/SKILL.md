@@ -42,8 +42,10 @@ what works right now, so the user doesn't discover gaps by accident. Gather in p
 - **Agents**: `getAgents({ days: 30, identityVersion: 2 })` gives the count, the most active (by
   executions), and the most recent. A coding agent is one per key (its sessions roll up into it).
   Name agents by their `label`.
-- **This session**: `getSessions({ agentId, days: 1 })` for the coding agent; the entry whose
-  `sessionId` equals the current Claude Code session id is **this session** (show its `label`).
+- **This session**: `getSessions({ agentId, sessionId: "${CLAUDE_SESSION_ID}" })` for the user's
+  coding agents, most recent first; the one that returns the session is **this session's agent**
+  (one agent per key: use the top-level `agentId`, never `sessionAgentId`). Show the session's
+  `label`. Remember that `agentId` for the rest of the session.
 - **Skills**: `listSkills({ agentId })` for this session's agent gives the skill count (system + mine).
 - **Memory sync**: read the one line in
   `~/.claude/projects/<project-slug>/memory/.sync_log`, where the slug is the session's working

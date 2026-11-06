@@ -15,8 +15,9 @@ The server merges the two; you always see one skill per name.
 ## Which agent
 
 Pass `agentId` to every call: the agent selected in this conversation, if any; otherwise this
-session's coding agent. Find that agent as `architect-overview` does: `getSessions({ agentId, days: 1 })`
-for the user's coding agent, then take the entry whose `sessionId` is this Claude Code session.
+session's coding agent. Find that agent as `architect-overview` does: `getSessions({ agentId,
+sessionId: "${CLAUDE_SESSION_ID}" })` over the user's coding agents; the one that returns the session
+is it (use the top-level `agentId`, never `sessionAgentId`).
 Never ask for or pass the collector key.
 
 ## Only when asked

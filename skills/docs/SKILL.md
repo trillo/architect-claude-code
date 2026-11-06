@@ -18,11 +18,14 @@ block) are stored separately; every save of new content is a new **version**. To
 
 ## Agents to pass
 
-- **This session's agent** → `agentId` (who wrote it; provenance). Find it as `architect-overview`
-  does: `getSessions({ agentId, days: 1 })` for the user's coding agent — the entry whose `sessionId`
-  is the current Claude Code session id. Never ask for or pass the collector key.
-- **Context agents** → `contextAgentIds`: the agent selected for analysis in this conversation, if
-  any; otherwise leave it out (the server defaults to this session's agent).
+- **Who wrote it** → always pass `sessionId: "${CLAUDE_SESSION_ID}"` to `saveDocument`. The server
+  finds the user's key that carries this session and records its agent as the writer (one agent per
+  key). Don't look the agent up yourself; never ask for or pass the collector key.
+- **Context agent** → `contextAgentIds` only when the user chose another (shared) agent for this
+  work, e.g. the agent being analyzed or the team agent they want to share with. Otherwise leave it
+  out: a new document gets the writer's agent.
+- After the save, `ownerAgentId` is the writer's agent. If it is null, tell the user the document has
+  no writer agent (telemetry for this session was not found).
 
 ## Saving
 
