@@ -26,7 +26,7 @@ or did, and what came of it. Diagnosis, fixes, and internal tooling go in issues
 
 | # | Step | Tool(s) | Outcome |
 |---|---|---|---|
-| 1 | "Show me the skills" | `listSkills` | No skills seeded → I-01 |
+| 1 | "Show me the skills" | `listSkills` | No skills → I-01 |
 
 **Current state:** …
 **Next:** …

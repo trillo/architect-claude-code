@@ -61,7 +61,7 @@ Architect · app 600
 
 Then add one line per problem, with the fix:
 - 0 agents → telemetry isn't reaching this app; check the `OTEL_*` setup.
-- 0 skills → no system skills yet; an admin needs to run `seedSkills`.
+- 0 skills → the app has no system skills (app-metadata `skills/`) and the user has none of their own.
 - `.sync_log` missing or `skipped: … not configured` → set the collector endpoint and key:
   `/plugin` → Installed → architect → Disable, then Enable (asks for both), then `/reload-plugins`.
 - `upload failed: HTTP 401` → the collector key is wrong; re-enter it the same way.

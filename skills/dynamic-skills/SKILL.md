@@ -73,4 +73,5 @@ or `model` have no effect for dynamic skills; read them as notes.
 
 - Never save or change a skill without the user's agreement.
 - Never put tokens, keys or personal data in a skill.
-- System skills change only with a Sidecar release; users change them by making their own copy.
+- System skills are part of the application: read-only, changed or removed only by a release. A user
+  works differently by making their own copy, which hides the system skill for them.

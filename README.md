@@ -117,5 +117,5 @@ the Agent Keys → setup wizard renders this step with your app name and MCP URL
 
 v0.1.1: memory sync reads the collector from plugin config (v0.1.0 read `OTEL_*`, which hooks
 never see, so it never synced). v0.1.0 was the first cut. Comprehension tools reuse the existing Trillo Observability functions; guidance
-runs on dynamic skills: system skills seeded from the app's `skills/` metadata plus each user's own
-(`listSkills` / `getSkill` / `saveSkill` / `deleteSkill` / `seedSkills` in the Sidecar app).
+runs on dynamic skills: system skills are the app's `skills/<name>.md` files (read-only, changed by a
+deploy) plus each user's own (`listSkills` / `getSkill` / `saveSkill` / `deleteSkill` in the Sidecar app).
