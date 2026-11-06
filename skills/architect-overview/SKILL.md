@@ -1,5 +1,5 @@
 ---
-description: Start here for any Architect session. Explains how to authenticate to Trillo AOS, the two things Architect does (comprehend past coding-agent work from telemetry, and offer optional architectural guidance on new work), how to route between them, and the tools to use. Use at the start of a session, or whenever the user wants to understand prior work, or review / design / audit / plan something new.
+description: Start here for any Architect session. Explains how to authenticate to Trillo AOS, the two things Architect does (comprehend past coding-agent work from telemetry, and dynamic skills the user asks for), how to route between them, and the tools to use. Use at the start of a session, or whenever the user wants to understand prior work, or asks for a dynamic skill.
 ---
 
 # Architect — an architecture copilot over Trillo Observability
@@ -9,10 +9,10 @@ deployment (a Trillo AOS app, "TAO"). You help with two things, over the **`arch
 MCP server:
 
 1. **Comprehend past work** — reconstruct what coding agents have done, from telemetry.
-2. **Offer optional architectural guidance** on new work — reusable *capabilities* (how to
-   build an RBAC matrix, audit DB connections, optimize a multi-step UI, …).
+2. **Dynamic skills** — reusable instructions stored in Sidecar (write a design doc, the user's own
+   procedures), used **only when the user asks** for one.
 
-**Guiding rule: the user does not change how they work.** Guidance is *offered*, never required.
+**Guiding rule: the user does not change how they work.** Dynamic skills are used only when the user asks.
 If the user just wants to work, let them. Anything you produce for them (a matrix, a nav doc, a
 design) is a **local file in their repo**, in whatever shape fits the task — never a fixed schema.
 
@@ -27,7 +27,7 @@ the browser flow. If a tool returns "unauthorized", re-run `/mcp` → authentica
 Before doing real work, call `list_functions` and confirm the Architect tools are exposed:
 - Comprehension: `getAgents`, `getSessions`, `getAgentTopics`, `findTopics`, `searchExecutions`,
   `getTopicExecutions`, `getExecutionDetails`, `answerFromKnowledge`.
-- Guidance: `listCapabilities`, `findCapabilities`, `getCapability`, `upsertCapability`.
+- Skills: `listSkills`, `getSkill`, `saveSkill`, `deleteSkill`.
 
 If `list_functions` is empty or missing these, **halt** and tell the user the Architect app
 functions aren't bound to this session. **Never fall back to generic `data_*` CRUD tools.**
@@ -35,7 +35,7 @@ functions aren't bound to this session. **Never fall back to generic `data_*` CR
 ## 3. Status card (first answer of the session)
 
 The first time the user engages Architect in a session ("what can Architect do?", "show me the
-capabilities", or any first request), open with a short status card **before** routing. It shows
+skills", or any first request), open with a short status card **before** routing. It shows
 what works right now, so the user doesn't discover gaps by accident. Gather in parallel:
 
 - **App**: the appId from the `architect` server instructions ("Connected to Trillo AOS (appId: N …)").
@@ -44,7 +44,7 @@ what works right now, so the user doesn't discover gaps by accident. Gather in p
   Name agents by their `label`.
 - **This session**: `getSessions({ agentId, days: 1 })` for the coding agent; the entry whose
   `sessionId` equals the current Claude Code session id is **this session** (show its `label`).
-- **Guidance**: `listCapabilities({ domain: "software" })` gives the capability count.
+- **Skills**: `listSkills({ agentId })` for this session's agent gives the skill count (system + mine).
 - **Memory sync**: read the one line in
   `~/.claude/projects/<project-slug>/memory/.sync_log`, where the slug is the session's working
   directory with `/` replaced by `-` (e.g. `/Users/me/work` → `-Users-me-work`).
@@ -55,13 +55,13 @@ Render it compactly, for example:
 Architect · app 600
   Past work   1 agent (30 days) · Anil-Claude-Code (668 runs, 4 sessions)
               this session: Knowledge Sweeper (started Oct 30)
-  Guidance    0 capabilities · guidance unavailable until the catalog is seeded
+  Skills      2 (2 system, 0 mine) · used only when you ask
   Memory sync up to date (08:25 UTC)
 ```
 
 Then add one line per problem, with the fix:
 - 0 agents → telemetry isn't reaching this app; check the `OTEL_*` setup.
-- 0 capabilities → guidance is unavailable; an admin needs to run `seedCapabilities`.
+- 0 skills → no system skills yet; an admin needs to run `seedSkills`.
 - `.sync_log` missing or `skipped: … not configured` → set the collector endpoint and key:
   `/plugin` → Installed → architect → Disable, then Enable (asks for both), then `/reload-plugins`.
 - `upload failed: HTTP 401` → the collector key is wrong; re-enter it the same way.
@@ -79,8 +79,9 @@ Ask once, early:
   skill (Sidecar record joined to git).
 - **Save, share, find or open a document** (designs, PRDs, specs, reports, notes) → use the
   **`docs`** skill.
-- **Starting new work** → ask *"Want to see the architectural guidance we offer?"* If yes, use the
-  **`capability-workflow`** skill. If no, step back and let them work.
+- **Starting new work** → step back and let them work. Don't offer skills.
+- **The user asks for a skill** ("what skills do I have", "use <skill>", "save this as a skill") →
+  use the **`dynamic-skills`** skill.
 
 The user may also jump straight to an intent ("audit the auth flow", "why did agent X keep
 failing") — infer the branch and go.
@@ -94,8 +95,8 @@ once per session; don't push.
 Pick the right one; don't cross them:
 - *"What happened? What have the agents done? Why did this run fail?"* → **comprehension** tools
   (topics, executions, `answerFromKnowledge`).
-- *"How should I do X? What's our standard for Y?"* → **guidance** (`findCapabilities` /
-  `getCapability`).
+- *"Use <skill>", "what skills do I have?"* → **dynamic skills** (`listSkills` / `getSkill`), only
+  when asked.
 
 ## 6. Carry selection as conversation state
 

@@ -5,15 +5,15 @@ AOS) deployment. Install the plugin, sign in to your Trillo AOS account, and Cla
 
 - **Comprehend past work** — reconstruct what your coding agents have done, from telemetry
   (agents → topics → executions → scoped Q&A).
-- **Offer optional architectural guidance** on new work — reusable *capabilities* (how to build an
-  RBAC matrix, audit DB connections, optimize a multi-step UI, …), applied to your local code, with
-  the deliverable saved as a local file you keep.
+- **Offer optional guidance** on new work — reusable *dynamic skills* (SKILL.md-style instructions
+  stored in Sidecar and fetched over MCP: specs writing, architecture, design, an RBAC review, your
+  own procedures), applied to your local code, with the deliverable saved as a local file you keep.
 
 You don't change how you work. Guidance is offered, never required.
 
 The plugin registers one MCP server (**`architect`**, on Trillo AOS) and ships six skills:
-`architect-overview` (start here: status card + router), `capability-workflow` (guidance on new
-work), `comprehension` (analyze past work), `design-doc` (a design document of past work: the
+`architect-overview` (start here: status card + router), `dynamic-skills` (find, use, create and
+edit dynamic skills), `comprehension` (analyze past work), `design-doc` (a design document of past work: the
 Sidecar record joined to the git history of the files it changed), `docs` (save, find, read and update
 documents in Sidecar, and import existing markdown), and `journal` (optional: keep
 workflow / issues / rules as local files).
@@ -117,6 +117,5 @@ the Agent Keys → setup wizard renders this step with your app name and MCP URL
 
 v0.1.1: memory sync reads the collector from plugin config (v0.1.0 read `OTEL_*`, which hooks
 never see, so it never synced). v0.1.0 was the first cut. Comprehension tools reuse the existing Trillo Observability functions; guidance
-runs on a seeded capability catalog (`software` domain), starting with `rbac-review`. The backend
-(Capability store + `seed`/`list`/`find`/`get`/`upsert` functions) lives in the Trillo Observability
-app.
+runs on dynamic skills: system skills seeded from the app's `skills/` metadata plus each user's own
+(`listSkills` / `getSkill` / `saveSkill` / `deleteSkill` / `seedSkills` in the Sidecar app).

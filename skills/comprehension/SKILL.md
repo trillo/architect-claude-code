@@ -31,6 +31,6 @@ own **inference**.
 
 - Prefer narrowing (agent → topic) before a broad `searchExecutions` — it keeps answers grounded
   and cheap.
-- This is read-only comprehension. For *how to do something* (a standard, an audit method), switch
-  to the **capability-workflow** skill — don't answer architecture-method questions from telemetry.
+- This is read-only comprehension. If the user asks for a dynamic skill, switch to the
+  **dynamic-skills** skill.
 - If a tool returns "unauthorized", re-authenticate: `/mcp` → **architect** → authenticate.
