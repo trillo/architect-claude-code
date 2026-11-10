@@ -34,13 +34,18 @@ block) are stored separately; every save of new content is a new **version**. To
 *"Save this to Sidecar? People who can see your agent will see it — or keep it private."* Never
 save silently.
 
-**A new document** — give `type`, `title`, and a `subfolder`; the server composes the path:
-the type's folder (Design → `architecture/`, PRD → `prds/`, Spec → `specs/`, Plan → `plans/`,
-Decision → `decisions/`, Runbook → `runbooks/`, Report → `reports/`, Note → `notes/`; any other type
-gets its own folder) + the subfolder + a file name from the title.
-- **Pick the subfolder** from the topic in context, reusing an existing folder when one fits:
-  `listDocuments({ folder: "<type folder>" })` returns its sub-folders. Short, lowercase, hyphenated
+**A new document** — give `type` and `title`; the server composes the path: the type's folder
+(Design → `architecture/`, PRD → `prds/`, Spec → `specs/`, Plan → `plans/`, Decision → `decisions/`,
+Runbook → `runbooks/`, Report → `reports/`, Note → `notes/`; any other type gets its own folder) + a
+file name from the title.
+- **Keep the tree flat.** By default, leave `subfolder` out: the document goes straight into its
+  type's folder. Deep trees are hard to browse.
+- **Add a `subfolder` only when it is needed** for a real, logical separation, such as a large area
+  with several documents of the same type that belong together. Reuse an existing one when it fits
+  (`listDocuments({ folder: "<type folder>" })` returns its sub-folders); short, lowercase, hyphenated
   (`topic-clustering`).
+- **Bookkeeping documents only on request.** Don't create Decision, WorkLog or other record-keeping
+  documents on your own (and don't offer to). Write them only when the user asks.
 - **Frontmatter** (`frontmatter`, JSON):
   - `description` — one line on what the document is (search relies on it; always write one);
   - `tags`; `status: draft`;

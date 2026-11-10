@@ -47,9 +47,6 @@ what works right now, so the user doesn't discover gaps by accident. Gather in p
   (one agent per key: use the top-level `agentId`, never `sessionAgentId`). Show the session's
   `label`. Remember that `agentId` for the rest of the session.
 - **Skills**: `listSkills({ agentId })` for this session's agent gives the skill count (system + mine).
-- **Memory sync**: read the one line in
-  `~/.claude/projects/<project-slug>/memory/.sync_log`, where the slug is the session's working
-  directory with `/` replaced by `-` (e.g. `/Users/me/work` → `-Users-me-work`).
 
 Render it compactly, for example:
 
@@ -58,15 +55,11 @@ Architect · app 600
   Past work   1 agent (30 days) · Anil-Claude-Code (668 runs, 4 sessions)
               this session: Knowledge Sweeper (started Oct 30)
   Skills      2 (2 system, 0 mine) · used only when you ask
-  Memory sync up to date (08:25 UTC)
 ```
 
 Then add one line per problem, with the fix:
 - 0 agents → telemetry isn't reaching this app; check the `OTEL_*` setup.
 - 0 skills → the app has no system skills (app-metadata `skills/`) and the user has none of their own.
-- `.sync_log` missing or `skipped: … not configured` → set the collector endpoint and key:
-  `/plugin` → Installed → architect → Disable, then Enable (asks for both), then `/reload-plugins`.
-- `upload failed: HTTP 401` → the collector key is wrong; re-enter it the same way.
 
 Don't repeat the card later in the session unless the user asks for status.
 
