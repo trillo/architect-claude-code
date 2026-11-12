@@ -38,12 +38,12 @@ save silently.
 (Design → `architecture/`, PRD → `prds/`, Spec → `specs/`, Plan → `plans/`, Decision → `decisions/`,
 Runbook → `runbooks/`, Report → `reports/`, Note → `notes/`; any other type gets its own folder) + a
 file name from the title.
-- **Keep the tree flat.** By default, leave `subfolder` out: the document goes straight into its
-  type's folder. Deep trees are hard to browse.
-- **Add a `subfolder` only when it is needed** for a real, logical separation, such as a large area
-  with several documents of the same type that belong together. Reuse an existing one when it fits
-  (`listDocuments({ folder: "<type folder>" })` returns its sub-folders); short, lowercase, hyphenated
-  (`topic-clustering`).
+- **One level only.** The folder tree is exactly one level deep: every document lives directly in a
+  top-level folder, never in a sub-folder. **Never pass `subfolder`.** Deep trees are hard to browse,
+  and a single flat level keeps every reader's documents organized the same way.
+- **Enhancement / extension proposals** — a design note proposing a net-new feature or an extension
+  to the system (as opposed to `architecture/`, which documents how existing things work) goes in a
+  top-level `enhancements/` folder: pass `path: "enhancements/<title-slug>.md"` with `type: design`.
 - **Bookkeeping documents only on request.** Don't create Decision, WorkLog or other record-keeping
   documents on your own (and don't offer to). Write them only when the user asks.
 - **Frontmatter** (`frontmatter`, JSON):
@@ -52,7 +52,10 @@ file name from the title.
   - `sources` — what it was built from, `{id, resource, title}`: topics as
     `sidecar://agents/<agentId>/topics/<topicId>`, executions as
     `sidecar://agents/<agentId>/executions/<executionId>`, commits as `git:<repo>@<hash>`; cite them in
-    the body with footnotes `[^id]`.
+    the body with footnote markers `[^id]`, and put the footnote definitions in a `## Sources` section
+    at the end (grouped, never inline prose). The viewer hides citations by default and reveals them
+    with a toggle, so keep the marker in the sentence and the detail in the note — don't write raw
+    `file:line` or URLs into the running text.
 - `generatedBy`: `architect-docs/<model>` for what you wrote; `human:<email>` (the user's email) when the user wrote it.
 - **A file that lives in a repo**: pass `origin {repo, path, commit}` (current HEAD). Saving the same
   repo file again updates the same document.
