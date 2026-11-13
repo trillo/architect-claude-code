@@ -1,4 +1,5 @@
 ---
+name: journal
 description: Keep a distilled journal of the current work as three local markdown files — workflow.md (the steps taken), issues.md (problems found), rules.md (rules discovered). Use when the user asks to journal, track, or record the work, or accepts the journal offer from architect-overview.
 ---
 

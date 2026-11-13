@@ -1,0 +1,20 @@
+{
+  "name": "architect",
+  "interface": {
+    "displayName": "Trillo Architect"
+  },
+  "plugins": [
+    {
+      "name": "architect",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

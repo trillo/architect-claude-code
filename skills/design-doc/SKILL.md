@@ -1,4 +1,5 @@
 ---
+name: design-doc
 description: Write a design document (or a write-up) of past work on a topic by joining Sidecar's record of the work — the why, the alternatives tried, decisions, problems, open items — with the git history of the files that work changed, for the exact current mechanics. Use when the user asks for a design doc, a write-up, a history or "how does X work and why" for something already built with a coding agent.
 ---
 
@@ -6,7 +7,7 @@ description: Write a design document (or a write-up) of past work on a topic by 
 
 > **This skill is retrospective — for a feature already built.** For a **new feature** (forward
 > design, before building), use the `write-design-doc` skill's forward mode: ground the design in
-> existing code (fan out `Explore` subagents to find reusable mechanisms *first*), then write
+> existing code (find reusable mechanisms *first* — fan out search subagents where the agent has them), then write
 > goals/non-goals → proposed design → alternatives → build plan → spec/acceptance, with the UI
 > handoff and API reference as appendices, landing in `designs/`.
 

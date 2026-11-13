@@ -1,4 +1,5 @@
 ---
+name: docs
 description: Save, find, read and update documents (markdown — designs, PRDs, specs, plans, reports, notes) in Sidecar, so the people who follow the work can see and search them. Use when the user asks to save, share, store, find, open or update a document in Sidecar, to import existing markdown, and — offered once — right after writing a design, PRD, spec or report.
 ---
 

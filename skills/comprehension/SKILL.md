@@ -1,4 +1,5 @@
 ---
+name: comprehension
 description: How to analyze past coding-agent work from Trillo Observability telemetry — find an agent, narrow to a topic, pull executions, and answer questions scoped to that agent or topic. Use when the user wants to understand prior work, asks "what has agent X been doing", "why did these runs fail", or wants to explore the knowledge base of past executions.
 ---
 
@@ -33,4 +34,5 @@ own **inference**.
   and cheap.
 - This is read-only comprehension. If the user asks for a dynamic skill, switch to the
   **dynamic-skills** skill.
-- If a tool returns "unauthorized", re-authenticate: `/mcp` → **architect** → authenticate.
+- If a tool returns "unauthorized", re-authenticate: in Claude Code `/mcp` → **architect** →
+  authenticate; in Codex, `codex mcp login architect` in a shell.

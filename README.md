@@ -1,7 +1,8 @@
-# Architect — Claude Code plugin
+# Architect — plugin for Claude Code and Codex
 
-An **architecture copilot** sidecar for Claude Code, backed by a **Trillo Observability** (Trillo
-AOS) deployment. Install the plugin, sign in to your Trillo AOS account, and Claude can:
+An **architecture copilot** sidecar for Claude Code and Codex, backed by a **Trillo Observability**
+(Trillo AOS) deployment. Install the plugin, sign in to your Trillo AOS account, and your coding
+agent can:
 
 - **Comprehend past work** — reconstruct what your coding agents have done, from telemetry
   (agents → topics → executions → scoped Q&A).
@@ -54,6 +55,44 @@ claude
 `oauth` block of `.mcp.json`, so the target app can't be parameterized there. Registering via the
 CLI lets you put the app directly into the client id (a public identifier, not a secret).
 
+## Install in Codex
+
+The same repo is a Codex plugin (`.codex-plugin/plugin.json`, marketplace in
+`.agents/plugins/marketplace.json`) with the same six skills. The `architect` MCP server is
+registered the same way as for Claude Code: by command, with your app in the OAuth client id.
+
+**1. Install the plugin:**
+
+```bash
+codex plugin marketplace add trillo/architect-claude-code
+```
+
+Then install **architect** from that marketplace: in Codex's plugin list, or the Plugins Directory
+of the ChatGPT desktop app.
+
+If your Codex can't install plugins, copy the skills instead — Codex reads skills from
+`~/.agents/skills/`:
+
+```bash
+git clone https://github.com/trillo/architect-claude-code ~/.trillo/architect && mkdir -p ~/.agents/skills && cp -R ~/.trillo/architect/skills/* ~/.agents/skills/
+```
+
+**2. Connect it to your app** — replace `<appName>` and `<your-aos-host>` as for Claude Code:
+
+```bash
+codex mcp add architect --url "https://<your-aos-host>/api/v2.0/mcp" --oauth-client-id "architect-claude-code-<appName>"
+```
+
+**3. Sign in** — a browser opens to sign in, then redirects back (skip if `codex mcp add` already
+signed you in):
+
+```bash
+codex mcp login architect
+```
+
+**4. Start Codex** (`codex`) and run `/mcp`: **architect** should be listed with its tools. Ask
+"use architect to list my agents" to check.
+
 ## Update
 
 To get a new version, run this in your shell (not inside a Claude Code session):
@@ -80,6 +119,9 @@ Tip: a Trillo Observability deployment can hand you a ready-to-paste command wit
 the Agent Keys → setup wizard renders this step with your app name and MCP URL already substituted.
 
 ## Status
+
+v0.1.17: Codex support — `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json` beside
+the Claude Code manifests; skills carry a `name` and say how to sign in again in either agent.
 
 v0.1.14: memory sync removed (Oloom no longer collects Claude Code memory; the plugin has no hooks or
 settings). Comprehension tools reuse the existing Trillo Observability functions; guidance

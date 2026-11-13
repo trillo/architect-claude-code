@@ -1,10 +1,11 @@
 ---
+name: dynamic-skills
 description: Dynamic skills - reusable instructions (write a design doc, specs, architecture, the user's own procedures) stored in Sidecar and fetched over MCP instead of installed locally. Use ONLY when the user explicitly asks - to list skills, to use a named skill ("use the write-design-doc skill"), or to create, change, turn off or delete a skill. Never on your own initiative.
 ---
 
 # Dynamic skills
 
-Dynamic skills work like Claude Code skills (a `SKILL.md`: name, description, markdown body), but
+Dynamic skills work like local skills (a `SKILL.md`: name, description, markdown body), but
 they live in Sidecar, so they reach every machine at once and the user can grow them. Two layers:
 - **System** skills ship with Sidecar.
 - **My** skills are the user's own, per agent. One with the same name as a system skill replaces it
@@ -41,7 +42,7 @@ Dynamic skills must not get in the way of normal work. Use them only when the us
 6. **After compaction**, fetch the skill again before continuing; the summary may have dropped it.
 
 **Who wins:** the user in the conversation first, then local project instructions (CLAUDE.md,
-installed skills), then the dynamic skill, then `base`. Frontmatter keys such as `allowed-tools`
+AGENTS.md, installed skills), then the dynamic skill, then `base`. Frontmatter keys such as `allowed-tools`
 or `model` have no effect for dynamic skills; read them as notes.
 
 ## Creating a skill
