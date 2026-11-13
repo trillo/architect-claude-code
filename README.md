@@ -21,9 +21,9 @@ workflow / issues / rules as local files).
 
 ## Install
 
-Install the plugin, then register the `oloom` MCP server for your app. The target app rides the
-OAuth **client id** (`oloom-<appName>`, a public identifier — not a secret), and the
-MCP URL is your Trillo AOS deployment + `/api/v2.0/mcp`.
+Install the plugin, then register the `oloom` MCP server. The OAuth **client id** is
+`oloom-TAO` (a public identifier, not a secret: `TAO` is the Oloom app's name on Trillo AOS), and
+the MCP URL is `https://aos-oliver.trillo.ai/api/v2.0/mcp`.
 
 **1. Install the plugin:**
 
@@ -35,12 +35,11 @@ claude plugin marketplace add trillo/oloom-plugin
 claude plugin install oloom@oloom
 ```
 
-**2. Connect it to your app** — replace `<appName>` with your Trillo Observability app's name and
-`<your-aos-host>` with your deployment, then paste the whole (single-line) command. `--scope user`
+**2. Connect it to Oloom** — paste the whole (single-line) command. `--scope user`
 makes oloom available in **every** project you code in (drop it for current-project-only):
 
 ```bash
-claude mcp add --scope user --transport http --client-id "oloom-<appName>" --callback-port 8091 oloom "https://<your-aos-host>/api/v2.0/mcp"
+claude mcp add --scope user --transport http --client-id "oloom-TAO" --callback-port 8091 oloom "https://aos-oliver.trillo.ai/api/v2.0/mcp"
 ```
 
 **3. Start Claude Code** (the previous commands only edit config — this opens a session; run it in the same folder):
@@ -77,10 +76,10 @@ If your Codex can't install plugins, copy the skills instead — Codex reads ski
 git clone https://github.com/trillo/oloom-plugin ~/.trillo/oloom && mkdir -p ~/.agents/skills && cp -R ~/.trillo/oloom/skills/* ~/.agents/skills/
 ```
 
-**2. Connect it to your app** — replace `<appName>` and `<your-aos-host>` as for Claude Code:
+**2. Connect it to Oloom:**
 
 ```bash
-codex mcp add oloom --url "https://<your-aos-host>/api/v2.0/mcp" --oauth-client-id "oloom-<appName>"
+codex mcp add oloom --url "https://aos-oliver.trillo.ai/api/v2.0/mcp" --oauth-client-id "oloom-TAO"
 ```
 
 **3. Sign in** — a browser opens to sign in, then redirects back (skip if `codex mcp add` already
@@ -110,18 +109,18 @@ disconnected afterwards, run `/mcp` → **oloom** → **authenticate** again.
 
 Two values go directly into the `claude mcp add` command (step 2 above) — no env vars to set:
 
-- **app name** — your Trillo Observability app's name, in the client id
-  `oloom-<appName>`. It selects which app AOS authenticates you against.
-- **MCP URL** — your Trillo AOS deployment + `/api/v2.0/mcp`
-  (e.g. `https://aos.trillo.ai/api/v2.0/mcp`, or your dev / self-hosted host).
+- **client id** — always `oloom-TAO`. The part after `oloom-` is the Oloom app's name (`TAO`); it
+  selects which app AOS signs you in to.
+- **MCP URL** — `https://aos-oliver.trillo.ai/api/v2.0/mcp`. To use another Trillo AOS deployment (for example a dev host), put its
+  host in place of `aos-oliver.trillo.ai`.
 
 Tip: a Trillo Observability deployment can hand you a ready-to-paste command with both filled in —
-the Agent Keys → setup wizard renders this step with your app name and MCP URL already substituted.
+the Agent Keys → setup wizard renders this step with the MCP URL already filled in.
 
 ## Status
 
 v0.2.0: renamed Architect → Oloom: plugin, marketplace and MCP server `oloom`; repo
-`trillo/oloom-plugin`; client id `oloom-<appName>`; overview skill `oloom-overview`.
+`trillo/oloom-plugin`; client id `oloom-TAO`; overview skill `oloom-overview`.
 
 
 v0.1.17: Codex support — `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json` beside
