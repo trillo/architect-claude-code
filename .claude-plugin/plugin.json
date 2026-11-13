@@ -1,12 +1,20 @@
 {
-  "name": "architect",
-  "version": "0.1.17",
-  "description": "An architecture copilot sidecar for Claude Code over Trillo Observability (Trillo AOS): comprehend past coding-agent work from telemetry, and get optional guidance on new work from dynamic skills — without changing how you work.",
+  "name": "oloom",
+  "version": "0.2.0",
+  "description": "Oloom, the knowledge layer over your coding agents' work (Trillo AOS): understand past work from telemetry, keep documents in Sidecar, and use dynamic skills — without changing how you work.",
   "author": {
     "name": "Trillo Inc",
     "url": "https://trillo.io"
   },
   "homepage": "https://trillo.io",
   "license": "UNLICENSED",
-  "keywords": ["trillo", "architecture", "comprehension", "guidance", "mcp", "oauth", "sidecar"]
+  "keywords": [
+    "trillo",
+    "oloom",
+    "knowledge",
+    "comprehension",
+    "mcp",
+    "oauth",
+    "sidecar"
+  ]
 }

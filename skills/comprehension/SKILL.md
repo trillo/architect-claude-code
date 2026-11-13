@@ -34,5 +34,5 @@ own **inference**.
   and cheap.
 - This is read-only comprehension. If the user asks for a dynamic skill, switch to the
   **dynamic-skills** skill.
-- If a tool returns "unauthorized", re-authenticate: in Claude Code `/mcp` → **architect** →
-  authenticate; in Codex, `codex mcp login architect` in a shell.
+- If a tool returns "unauthorized", re-authenticate: in Claude Code `/mcp` → **oloom** →
+  authenticate; in Codex, `codex mcp login oloom` in a shell.

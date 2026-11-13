@@ -50,7 +50,7 @@ model or a wrong number; commit messages rarely say what was tried and rejected.
 
 7. **Offer to save it to Sidecar** (the `docs` skill): type `Design`, a subfolder from the topic,
    `sources` = the topics (`sidecar://agents/<id>/topics/<id>`), the key executions and the commits
-   it cites, `generatedBy: architect-design-doc/<model>`, `origin` when the file is in a repo.
+   it cites, `generatedBy: oloom-design-doc/<model>`, `origin` when the file is in a repo.
 
 ## Rules
 

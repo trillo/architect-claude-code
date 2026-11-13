@@ -59,7 +59,7 @@ file name from the title.
     at the end (grouped, never inline prose). The viewer hides citations by default and reveals them
     with a toggle, so keep the marker in the sentence and the detail in the note — don't write raw
     `file:line` or URLs into the running text.
-- `generatedBy`: `architect-docs/<model>` for what you wrote; `human:<email>` (the user's email) when the user wrote it.
+- `generatedBy`: `oloom-docs/<model>` for what you wrote; `human:<email>` (the user's email) when the user wrote it.
 - **A file that lives in a repo**: pass `origin {repo, path, commit}` (current HEAD). Saving the same
   repo file again updates the same document.
 - **A local file with a YAML block**: send it as is if the block is simple (`key: value`, `[a, b]`);

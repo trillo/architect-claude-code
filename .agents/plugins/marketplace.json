@@ -1,11 +1,11 @@
 {
-  "name": "architect",
+  "name": "oloom",
   "interface": {
-    "displayName": "Trillo Architect"
+    "displayName": "Oloom"
   },
   "plugins": [
     {
-      "name": "architect",
+      "name": "oloom",
       "source": {
         "source": "local",
         "path": "./"
