@@ -4,6 +4,12 @@ description: Write a design document (or a write-up) of past work on a topic by 
 
 # Design doc — Sidecar record + git
 
+> **This skill is retrospective — for a feature already built.** For a **new feature** (forward
+> design, before building), use the `write-design-doc` skill's forward mode: ground the design in
+> existing code (fan out `Explore` subagents to find reusable mechanisms *first*), then write
+> goals/non-goals → proposed design → alternatives → build plan → spec/acceptance, with the UI
+> handoff and API reference as appendices, landing in `designs/`.
+
 Sidecar holds the **conversation** side of past work: what was asked and decided, what was tried
 and dropped, problems, open items. Git holds the **code** side: exactly what changed and what the
 code does now. A design document needs both. Neither alone is enough: summaries can name a wrong

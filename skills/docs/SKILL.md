@@ -35,15 +35,17 @@ block) are stored separately; every save of new content is a new **version**. To
 save silently.
 
 **A new document** — give `type` and `title`; the server composes the path: the type's folder
-(Design → `architecture/`, PRD → `prds/`, Spec → `specs/`, Plan → `plans/`, Decision → `decisions/`,
+(Design → `designs/`, PRD → `prds/`, Spec → `specs/`, Plan → `plans/`, Decision → `decisions/`,
 Runbook → `runbooks/`, Report → `reports/`, Note → `notes/`; any other type gets its own folder) + a
 file name from the title.
 - **One level only.** The folder tree is exactly one level deep: every document lives directly in a
   top-level folder, never in a sub-folder. **Never pass `subfolder`.** Deep trees are hard to browse,
   and a single flat level keeps every reader's documents organized the same way.
-- **Enhancement / extension proposals** — a design note proposing a net-new feature or an extension
-  to the system (as opposed to `architecture/`, which documents how existing things work) goes in a
-  top-level `enhancements/` folder: pass `path: "enhancements/<title-slug>.md"` with `type: design`.
+- **Design documents** (`type: design`) land in `designs/`. A design document works out *how* to
+  build a net-new feature or change — problem, proposed design, alternatives, spec/acceptance.
+- **Enhancement requests** go in a top-level `enhancements/` folder — the short "we should build X"
+  note that still needs design: `path: "enhancements/<title-slug>.md"`, `type: note`. Designing one
+  produces a design document in `designs/`.
 - **Bookkeeping documents only on request.** Don't create Decision, WorkLog or other record-keeping
   documents on your own (and don't offer to). Write them only when the user asks.
 - **Frontmatter** (`frontmatter`, JSON):
